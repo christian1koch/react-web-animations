@@ -44,7 +44,7 @@ export default function ScrollPathPage() {
                 className="absolute z-0 w-full overflow-hidden"
             >
                 <svg
-                    className="pt-144 sticky z-0 mx-auto w-full max-w-[1200px] overflow-visible"
+                    className="pt-144 sticky z-0 mx-auto w-full max-w-[1400px] overflow-visible"
                     viewBox="0 0 1310 3800"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
