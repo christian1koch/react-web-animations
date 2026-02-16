@@ -99,7 +99,7 @@ export default function MagnetoButtonPage() {
                 className="static h-32 w-32 overflow-hidden rounded-[50%]"
             >
                 <span
-                    className="z-1 absolute h-10 w-10 rounded-[50%] bg-blue-400"
+                    className="z-1 absolute h-10 w-10 scale-0 rounded-[50%] bg-blue-400"
                     ref={colorOverlay}
                 ></span>
                 <span
