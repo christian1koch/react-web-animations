@@ -89,23 +89,21 @@ export default function MagnetoButtonPage() {
 
     return (
         <div
-            className="flex h-screen w-full items-center justify-center bg-stone-800"
+            className="flex h-screen w-full items-center justify-center"
             ref={containerRef}
         >
             <Button
                 onMouseMove={onHover}
                 onMouseLeave={onMouseLeave}
                 ref={buttonRef}
+                variant={"secondary"}
                 className="static h-32 w-32 overflow-hidden rounded-[50%]"
             >
                 <span
-                    className="z-1 absolute h-10 w-10 scale-0 rounded-[50%] bg-blue-400"
+                    className="z-1 bg-chart-2 absolute h-10 w-10 scale-0 rounded-[50%]"
                     ref={colorOverlay}
                 ></span>
-                <span
-                    className="z-2 font-semibold text-stone-900"
-                    ref={textRef}
-                >
+                <span className="z-2" ref={textRef}>
                     Hover me!
                 </span>
             </Button>
