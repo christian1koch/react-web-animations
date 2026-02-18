@@ -26,8 +26,8 @@ export default function FullNav() {
         gsap.set(".anim-link", { y: 75 });
         timeline.current = gsap.timeline();
         timeline.current.to(menuRef.current, {
-            duration: 1.5,
-            clipPath: "circle(100% at 50% 100%)",
+            duration: 1.2,
+            clipPath: "circle(140% at 50% 100%)",
             ease: "power4.inOut",
         });
         timeline.current.to(".anim-link", {
