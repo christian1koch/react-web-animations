@@ -23,6 +23,7 @@ export default function FullNav() {
             clipPath: "circle(100%)",
             ease: "power4.inOut",
         });
+        gsap.set(".anim-link", { y: 75 });
         timeline.current = gsap.timeline();
         timeline.current.to(menuRef.current, {
             duration: 1.5,
@@ -31,6 +32,7 @@ export default function FullNav() {
         });
         timeline.current.to(".anim-link", {
             duration: 1,
+            y: 0,
             clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             ease: "power4.inOut",
             stagger: 0.1,
@@ -65,18 +67,26 @@ export default function FullNav() {
                 />
             </div>
             <div className="z-2 fixed right-0 top-0 p-6">
-                <Button variant="ghost" onClick={toggleMenu}>
+                <Button
+                    className="text-xl"
+                    variant="ghost"
+                    onClick={toggleMenu}
+                >
                     Menu
                 </Button>
             </div>
+            <div className="z-2 fixed left-0 top-0 p-6 text-xl">
+                Christian Koch Echeverría
+            </div>
+
             <div
                 ref={menuRef}
                 style={{
                     clipPath: "circle(50% at 50% -100%)",
                 }}
-                className="z-1 absolute flex h-full w-full items-center justify-center bg-red-700"
+                className="z-1 absolute flex h-full w-full items-center justify-center bg-red-800"
             >
-                <div className="p-72 text-8xl">
+                <div className="p-72 text-9xl">
                     <p
                         className="anim-link"
                         style={{
