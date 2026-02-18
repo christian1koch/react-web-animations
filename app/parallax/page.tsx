@@ -1,13 +1,11 @@
 "use client";
+import { useGSAP } from "@gsap/react";
 import { Button } from "@/components/ui/button";
+import gsap from "gsap";
 import ReactLenis, { useLenis } from "lenis/react";
 import { Instrument_Serif } from "next/font/google";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-
-const lerp = (start: number, end: number, factor: number) => {
-    return start + (end - start) * factor;
-};
+import { useRef } from "react";
 
 const instrumentSerif = Instrument_Serif({
     subsets: ["latin"],
@@ -217,6 +215,9 @@ const ProjectTitle = ({ children }: { children: React.ReactNode }) => {
     return <h1 className="text-6xl tracking-wide">{children}</h1>;
 };
 
+/**
+ * Parallex Image with Ai Comments to understand how to generallize this example
+ */
 const ParallaxImage = ({
     src,
     alt,
@@ -226,55 +227,55 @@ const ParallaxImage = ({
     alt: string;
     className?: string;
 }) => {
+    // Ref to the actual <img> DOM node that GSAP animates.
     const imageRef = useRef<HTMLImageElement | null>(null);
-    const boundsRef = useRef<DOMRect | null>(null);
-    const currentTranslateY = useRef(0);
-    const targetTranslateY = useRef(0);
-    const refId = useRef<number | null>(null);
+    // Stores a performant setter function created by gsap.quickTo for y translation.
+    const quickToYRef = useRef<((value: number) => gsap.core.Tween) | null>(
+        null
+    );
 
-    useEffect(() => {
-        const updateBounds = () => {
+    // useGSAP scopes setup/cleanup to this component, so animations are reverted safely on unmount.
+    useGSAP(
+        () => {
+            // Guard because refs are null before the element is mounted.
             if (!imageRef.current) return;
-            if (!boundsRef.current) {
-                console.log("does it ever come here");
-                boundsRef.current = imageRef.current.getBoundingClientRect();
-            }
-        };
+            // Set a known baseline transform once before scroll updates start.
+            gsap.set(imageRef.current, {
+                // Start from neutral vertical offset.
+                y: 0,
+                // Slight overscale prevents empty edges while translating.
+                scale: 1.25,
+                // Hint GPU acceleration for smoother transforms.
+                force3D: true,
+            });
+            // Create a reusable y animator: each call retargets smoothly instead of spawning manual RAF loops.
+            quickToYRef.current = gsap.quickTo(imageRef.current, "y", {
+                // Smoothing duration for each incoming Lenis update.
+                duration: 0.6,
+                // Ease for a natural catch-up feel.
+                ease: "power3.out",
+            });
+        },
+        // Scope ties GSAP context to this ref for automatic cleanup.
+        { scope: imageRef }
+    );
 
-        updateBounds();
-        window.addEventListener("resize", updateBounds);
-
-        const animate = () => {
-            if (!imageRef.current) return;
-            currentTranslateY.current = lerp(
-                currentTranslateY.current,
-                targetTranslateY.current,
-                0.1
-            );
-
-            if (
-                Math.abs(currentTranslateY.current - targetTranslateY.current) >
-                0.01
-            ) {
-                imageRef.current.style.transform = `translateY(${currentTranslateY.current}px) scale(1.25)`;
-            }
-            refId.current = requestAnimationFrame(animate);
-        };
-
-        animate();
-
-        return () => {
-            window.removeEventListener("resize", updateBounds);
-            if (refId.current) {
-                cancelAnimationFrame(refId.current);
-            }
-        };
-    }, []);
-
-    useLenis((lenis) => {
-        if (!boundsRef.current) return;
-        const relativeScroll = lenis.scroll - boundsRef.current.top;
-        targetTranslateY.current = relativeScroll * 0.2;
+    // Lenis fires on scroll; we only compute target positions here and let GSAP tween them.
+    useLenis(() => {
+        // Guard until both DOM node and quickTo handler are ready.
+        if (!imageRef.current || !quickToYRef.current) return;
+        // Measure image position relative to the viewport on each scroll tick.
+        const rect = imageRef.current.getBoundingClientRect();
+        // Viewport center is our "neutral" line for parallax.
+        const viewportCenter = window.innerHeight / 2;
+        // Current image center in viewport coordinates.
+        const imageCenter = rect.top + rect.height / 2;
+        // Positive/negative distance from center drives parallax direction.
+        const distanceFromCenter = viewportCenter - imageCenter;
+        // Convert distance to movement and clamp to avoid extreme jumps.
+        const y = gsap.utils.clamp(-120, 120, distanceFromCenter * 0.12);
+        // Push target y to GSAP's quick animator.
+        quickToYRef.current(y);
     });
 
     return (
