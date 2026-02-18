@@ -25,13 +25,13 @@ export default function FullNav() {
         });
         timeline.current = gsap.timeline();
         timeline.current.to(menuRef.current, {
-            duration: 1,
+            duration: 1.5,
             clipPath: "circle(100% at 50% 100%)",
             ease: "power4.inOut",
         });
         timeline.current.to(".anim-link", {
             duration: 1,
-            clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+            clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
             ease: "power4.inOut",
             stagger: 0.1,
             delay: -0.75,
@@ -40,6 +40,7 @@ export default function FullNav() {
     });
     const toggleMenu = contextSafe(() => {
         if (isMenuOpen) {
+            timeline.current?.play();
             timeline.current?.reverse();
 
             setIsMenuOpen(false);
@@ -64,26 +65,18 @@ export default function FullNav() {
                 />
             </div>
             <div className="z-2 fixed right-0 top-0 p-6">
-                <Button onClick={toggleMenu}>Menu</Button>
+                <Button variant="ghost" onClick={toggleMenu}>
+                    Menu
+                </Button>
             </div>
             <div
                 ref={menuRef}
                 style={{
                     clipPath: "circle(50% at 50% -100%)",
                 }}
-                className="z-1 absolute h-full w-full bg-red-700"
+                className="z-1 absolute flex h-full w-full items-center justify-center bg-red-700"
             >
-                <div className="text-4xl">
-                    <div>
-                        <p
-                            className="anim-link"
-                            style={{
-                                clipPath: "polygon(0 0, 100% 0)",
-                            }}
-                        >
-                            Projects
-                        </p>
-                    </div>
+                <div className="p-72 text-8xl">
                     <p
                         className="anim-link"
                         style={{
@@ -95,7 +88,16 @@ export default function FullNav() {
                     <p
                         className="anim-link"
                         style={{
-                            clipPath: "polygon(0 0, 100% 0)",
+                            clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+                        }}
+                    >
+                        Projects
+                    </p>
+
+                    <p
+                        className="anim-link"
+                        style={{
+                            clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
                         }}
                     >
                         About me
@@ -103,7 +105,7 @@ export default function FullNav() {
                     <p
                         className="anim-link"
                         style={{
-                            clipPath: "polygon(0 0, 100% 0)",
+                            clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
                         }}
                     >
                         Contact me
